@@ -80,7 +80,7 @@ async def lifespan(app: FastAPI):
     state["meta"] = json.loads(META_FILE.read_text())
     
     raw = pd.read_csv(DATA, sep=None, engine="python")
-    df = clean_data(raw).head(5)
+    df = clean_data(raw).head(20)
     patients = []
     for i, row in enumerate(df.to_dict(orient="records")):
         patients.append(Patient(

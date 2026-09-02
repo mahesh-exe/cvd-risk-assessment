@@ -1,0 +1,58 @@
+# Cardiovascular Clinical Decision Support MVP - Project Explanation
+
+## How this project works
+This project is an MVP (Minimum Viable Product) of a Cardiovascular Clinical Decision Support dashboard. 
+It uses a machine learning backend to predict a patient's risk of cardiovascular disease based on clinical data (e.g., age, weight, blood pressure, cholesterol). The backend trains multiple ML models on a public 70,000-row cardiovascular dataset, evaluates them, and serves the best-performing model via a REST API.
+The frontend is a React-based dashboard that allows users to view patient data, run risk assessments, understand the drivers behind the risk using SHAP (feature importance), and run "What-If" simulations to see how changing modifiable factors (like blood pressure or smoking) affects the patient's risk. It also features a real-time, simulated telemetry data feed.
+
+## Tech Stack Used
+**Backend:**
+- Python 3.12
+- FastAPI: For building the high-performance REST API and WebSocket endpoints.
+- Uvicorn: The ASGI web server to run the FastAPI application.
+
+**Machine Learning:**
+- Scikit-learn: For data preprocessing, pipelines, Random Forest, SVM, and Gradient Boosting models.
+- XGBoost (optional/conditional): For advanced gradient boosting.
+- Pandas & Numpy: For data manipulation and numerical operations.
+- SHAP (SHapley Additive exPlanations): For explaining model predictions.
+- Joblib: For saving and loading the trained model.
+
+**Frontend:**
+- React.js: For building the user interface components.
+- Vite: As the fast build tool and development server.
+- Standard CSS: For styling the dashboard without heavy framework dependencies.
+
+## Terms Used
+- **MVP (Minimum Viable Product):** A version of a product with just enough features to be usable by early customers who can then provide feedback for future product development.
+- **ROC-AUC (Receiver Operating Characteristic - Area Under Curve):** A performance metric for classification models. It evaluates how well the model distinguishes between classes (e.g., risk vs. no risk).
+- **SHAP (SHapley Additive exPlanations):** A method from cooperative game theory used to explain individual predictions of machine learning models by assigning each feature an importance value.
+- **What-If Analysis:** A simulation feature that allows users to change input variables to see how those changes would impact the model's prediction.
+- **Telemetry / WebSocket:** Telemetry is the automatic recording and transmission of data from remote or inaccessible sources (like a heart monitor). A WebSocket provides a persistent, full-duplex communication channel over a single TCP connection, ideal for streaming this live data.
+- **WHO GHO:** World Health Organization Global Health Observatory.
+
+## Models Used and How They Work
+The training script evaluates three primary model architectures:
+1. **Random Forest Classifier:** An ensemble learning method that builds multiple decision trees and merges them together to get a more accurate and stable prediction.
+2. **Support Vector Machine (SVM):** A model that finds a hyperplane in an N-dimensional space that distinctly classifies the data points.
+3. **XGBoost (or Scikit-learn's HistGradientBoostingClassifier):** A powerful gradient boosting framework that builds trees sequentially, where each new tree attempts to correct the errors of the previous ones. (If XGBoost is unavailable due to OS-level dependency issues like OpenMP on macOS, it honestly falls back to Scikit-learn's equivalent).
+
+**How they work:**
+- The raw dataset is first cleaned to remove implausible physiological outliers.
+- Features are scaled and missing values are imputed via a preprocessing pipeline.
+- The models are trained on 80% of the data and evaluated on a 20% holdout set.
+- The model with the highest ROC-AUC score is selected as the "Best Model" and serialized (saved) to disk.
+- When an assessment is requested, the API loads this model and uses it to predict the probability of cardiovascular disease for the provided patient data.
+
+## What We Have Not Included and Why
+- **Real-time patient database integrations:** The MVP uses a static, pre-loaded set of patients derived from the training data. A full clinical database integration (like FHIR/EHR) is too complex and out of scope for an initial demo.
+- **Live WHO GHO Benchmark Data:** The API explicitly returns an "unavailable" state for the WHO global health observatory benchmark. This is to demonstrate how the system handles missing external integrations truthfully, rather than fabricating data.
+- **Clinical-grade Medical Certification:** The model and dashboard are strictly for academic/research demonstration. They have not undergone the rigorous regulatory approval required for actual clinical diagnosis.
+- **Complex Authentication/Authorization:** Excluded to keep the MVP frictionless for reviewers.
+
+## The MVP's Workflow
+1. **Patient Selection & Data Entry:** The user selects a demo patient on the dashboard, populating their baseline factors (age, sex, height, weight, blood pressure, etc.).
+2. **Initial Risk Assessment:** The user runs an assessment. The backend model evaluates the patient and returns a risk score (probability) and a risk category (Low, Moderate, High).
+3. **Explanation (SHAP):** The dashboard displays the specific factors driving the patient's risk. These are categorized into "Actionable" (modifiable factors like weight and BP) and "Baseline" (non-modifiable like age).
+4. **What-If Simulation:** The user can adjust the actionable factors (e.g., lower the blood pressure, stop smoking) and hit "Recalculate simulated risk." The backend runs the model on the new data and returns the simulated risk alongside a comparison to the original state.
+5. **Live Telemetry:** Throughout the demo, a telemetry card continuously updates with simulated live vital signs (Systolic/Diastolic BP, Heart Rate) streamed via a WebSocket connection every three seconds, representing a real-time monitor.
