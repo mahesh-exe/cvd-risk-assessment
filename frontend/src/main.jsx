@@ -15,6 +15,7 @@ import AssessmentSequenceModal from './components/AssessmentSequenceModal.jsx';
 import PatientRecordModal from './components/PatientRecordModal.jsx';
 import ClinicalGuidelinesModal from './components/ClinicalGuidelinesModal.jsx';
 import NewPatientModal from './components/NewPatientModal.jsx';
+import HealthIndicatorDetailModal from './components/HealthIndicatorDetailModal.jsx';
 
 const API = 'http://localhost:8000';
 
@@ -47,6 +48,7 @@ export default function App() {
   // Cross-visualization factor synchronization (Requirements 8, 26)
   const [activeHoverFactor, setActiveHoverFactor] = useState(null);
   const [selectedFactor, setSelectedFactor] = useState(null);
+  const [selectedIndicator, setSelectedIndicator] = useState(null);
 
   // Modals state
   const [whatIfOpen, setWhatIfOpen] = useState(false);
@@ -399,14 +401,10 @@ export default function App() {
                 <span className="panel-main-title">Estimated Cardiovascular Risk</span>
                 <span className="panel-sub-title">Supervised Machine Learning Inference</span>
               </div>
-              <div className="panel-header-badge">
-                <span className="engine-status-led" />
-                <span>HistGradientBoosting</span>
-              </div>
             </div>
 
-            <div className="risk-gauge-and-engine-row">
-              {/* Semicircular Animated Gauge (Requirement 10) */}
+            {/* Gauge centred, action buttons directly below */}
+            <div className="risk-gauge-centered-layout">
               <div className="gauge-viewport-box">
                 <AuthenticClinicalGauge
                   prediction={result?.prediction}
@@ -414,42 +412,29 @@ export default function App() {
                 />
               </div>
 
-              {/* Model & Evidence Block */}
-              <div className="gauge-model-meta-box">
-                <div className="model-engine-card">
-                  <span className="model-eyebrow">DEPLOYED CLASSIFIER</span>
-                  <div className="model-engine-name">
-                    {result?.prediction?.model_used ?? 'Gradient Boosting (HistGradientBoosting)'}
-                  </div>
-                  <p className="model-engine-desc">
-                    Native histogram gradient-boosted decision tree algorithm selected via test ROC-AUC (80.29%) on 68,570 patient validation records.
-                  </p>
-                </div>
+              {/* Action buttons sit directly beneath the gauge */}
+              <div className="gauge-action-buttons-row">
+                <button
+                  className="btn-action-tool"
+                  onClick={() => setWhatIfOpen(true)}
+                  id="btn-whatif-trigger"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M18 20V10M12 20V4M6 20v-6" />
+                  </svg>
+                  <span>What-If Simulator</span>
+                </button>
 
-                {/* Action Buttons Grid */}
-                <div className="analytical-action-buttons-grid">
-                  <button
-                    className="btn-action-tool"
-                    onClick={() => setWhatIfOpen(true)}
-                    id="btn-whatif-trigger"
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M18 20V10M12 20V4M6 20v-6" />
-                    </svg>
-                    <span>What-If Simulator</span>
-                  </button>
-
-                  <button
-                    className="btn-action-tool secondary"
-                    onClick={() => setModelModalOpen(true)}
-                    id="btn-model-trigger"
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    </svg>
-                    <span>Model Validation</span>
-                  </button>
-                </div>
+                <button
+                  className="btn-action-tool secondary"
+                  onClick={() => setModelModalOpen(true)}
+                  id="btn-model-trigger"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  </svg>
+                  <span>Model Validation</span>
+                </button>
               </div>
             </div>
           </div>
@@ -497,13 +482,14 @@ export default function App() {
                 <span className="panel-main-title">Health Indicators</span>
                 <span className="panel-sub-title">Clinical Range & Threshold Charts</span>
               </div>
-              <span className="panel-badge-pill">6 Biomarkers</span>
+              <span className="panel-badge-pill">7 Indicators</span>
             </div>
             <div className="panel-inner-body bullet-body">
               <HealthBulletIndicators
                 patient={patient}
                 activeHoverFactor={activeHoverFactor}
                 onHoverFactor={setActiveHoverFactor}
+                onSelectIndicator={(factorId) => setSelectedIndicator(factorId)}
               />
             </div>
           </div>
@@ -545,10 +531,8 @@ export default function App() {
               </strong>
             </div>
             <div className="summary-stat-cell">
-              <span className="stat-label">Functioning Model</span>
-              <span className="stat-model-val">
-                {result?.prediction?.model_used ?? 'Gradient Boosting (HistGradientBoosting)'}
-              </span>
+              <span className="stat-label">Assessment Status</span>
+              <span className="stat-val green">Complete</span>
             </div>
             <div className="summary-stat-cell">
               <span className="stat-label">Assessed At</span>
@@ -613,6 +597,21 @@ export default function App() {
         open={newPatientOpen}
         onClose={() => setNewPatientOpen(false)}
         onPatientAssessed={handleNewPatientAssessed}
+      />
+
+      {/* 7. Health Indicator Detailed Visualization Modal */}
+      <HealthIndicatorDetailModal
+        indicatorId={selectedIndicator}
+        open={Boolean(selectedIndicator)}
+        onClose={() => setSelectedIndicator(null)}
+        patient={patient}
+        result={result}
+        onOpenWhatIf={(factorId) => {
+          setSelectedIndicator(null);
+          setActiveHoverFactor(factorId);
+          setWhatIfOpen(true);
+        }}
+        onSelectIndicator={(factorId) => setSelectedIndicator(factorId)}
       />
     </div>
   );

@@ -199,7 +199,7 @@ export default function NewPatientModal({
             <div>
               <div className="new-patient-title">
                 <span>New Patient Clinical Intake</span>
-                <span className="live-engine-tag">HistGradientBoosting Classifier</span>
+                <span className="live-engine-tag">Deployed ML Classifier</span>
               </div>
               <p className="new-patient-subtitle">
                 Enter physiological and laboratory measurements to compute model risk, SHAP factors, and biomarker profile.
@@ -589,7 +589,7 @@ export default function NewPatientModal({
           {/* Modal Footer Controls */}
           <div className="new-patient-modal-footer">
             <div className="footer-meta-text">
-              <span>All 11 factors are passed directly to the deployed HistGradientBoosting pipeline. No fabricated scores.</span>
+              <span>All clinical factors are passed directly to the deployed ML pipeline. No fabricated scores.</span>
             </div>
             <div className="footer-actions-group">
               <button

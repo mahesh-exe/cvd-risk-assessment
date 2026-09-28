@@ -4,8 +4,8 @@ const STEPS = [
   { id: 1, label: 'RUNNING ASSESSMENT', desc: 'Initializing clinical inference pipeline' },
   { id: 2, label: 'VALIDATING DATA', desc: 'Checking hemodynamic ranges & integrity' },
   { id: 3, label: 'ANALYSING RISK FACTORS', desc: 'Evaluating modifiable & baseline covariates' },
-  { id: 4, label: 'GENERATING MODEL PREDICTION', desc: 'Executing HistGradientBoosting classifier' },
-  { id: 5, label: 'GENERATING EXPLANATION', desc: 'Computing TreeExplainer SHAP contributions' },
+  { id: 4, label: 'GENERATING MODEL PREDICTION', desc: 'Executing deployed ML classifier pipeline' },
+  { id: 5, label: 'GENERATING EXPLANATION', desc: 'Computing SHAP feature contributions' },
   { id: 6, label: 'ASSESSMENT READY', desc: 'Synthesizing cardiovascular risk report' }
 ];
 

@@ -1,5 +1,13 @@
 {
-  "best_model": "Gradient Boosting (XGBoost runtime unavailable)",
+  "best_model": "XGBoost",
+  "best_model_metrics": {
+    "model": "XGBoost",
+    "accuracy": 0.735,
+    "precision": 0.7545,
+    "recall": 0.6885,
+    "f1": 0.72,
+    "roc_auc": 0.8037
+  },
   "feature_names": [
     "age_years",
     "gender",
@@ -17,30 +25,68 @@
   "metrics": [
     {
       "model": "Random Forest",
-      "accuracy": 0.7356,
-      "precision": 0.7526,
-      "recall": 0.6938,
-      "f1": 0.722,
-      "roc_auc": 0.8026
+      "accuracy": 0.736,
+      "precision": 0.7529,
+      "recall": 0.6945,
+      "f1": 0.7225,
+      "roc_auc": 0.8018
     },
     {
       "model": "SVM",
-      "accuracy": 0.7322,
-      "precision": 0.7633,
-      "recall": 0.6649,
-      "f1": 0.7107,
-      "roc_auc": 0.7897
+      "accuracy": 0.7341,
+      "precision": 0.7611,
+      "recall": 0.6743,
+      "f1": 0.7151,
+      "roc_auc": 0.7915
     },
     {
-      "model": "Gradient Boosting (XGBoost runtime unavailable)",
+      "model": "XGBoost",
       "accuracy": 0.735,
-      "precision": 0.7524,
-      "recall": 0.6923,
-      "f1": 0.7211,
-      "roc_auc": 0.8029
+      "precision": 0.7545,
+      "recall": 0.6885,
+      "f1": 0.72,
+      "roc_auc": 0.8037
+    },
+    {
+      "model": "MLP Neural Network",
+      "accuracy": 0.7363,
+      "precision": 0.7549,
+      "recall": 0.6916,
+      "f1": 0.7218,
+      "roc_auc": 0.8015
     }
   ],
   "training_rows": 68570,
+  "train_size": 54856,
+  "test_size": 13714,
+  "test_split": 0.2,
+  "random_state": 42,
   "source": "data/raw/cardio_train.csv",
-  "xgboost_runtime_available": false
+  "xgboost_available": true,
+  "models_trained": [
+    "Random Forest",
+    "SVM",
+    "XGBoost",
+    "MLP Neural Network"
+  ],
+  "trained_at": "2026-09-28T09:04:32.647643+00:00",
+  "model_version": "2.0.0",
+  "preprocessing": {
+    "imputer": "SimpleImputer(strategy='median')",
+    "scaler": "StandardScaler",
+    "feature_names": [
+      "age_years",
+      "gender",
+      "height",
+      "weight",
+      "ap_hi",
+      "ap_lo",
+      "cholesterol",
+      "gluc",
+      "smoke",
+      "alco",
+      "active",
+      "bmi"
+    ]
+  }
 }
