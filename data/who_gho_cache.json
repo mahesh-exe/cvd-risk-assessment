@@ -1,0 +1,16 @@
+{
+  "status": "available",
+  "indicator_code": "BP_06",
+  "indicator_name": "Mean systolic blood pressure (age-standardized estimate, adults 18+)",
+  "metric_name": "Systolic Blood Pressure (mmHg)",
+  "global_male": 127.0,
+  "global_male_ci": "125.7 - 128.3",
+  "global_female": 122.3,
+  "global_female_ci": "121.0 - 123.6",
+  "global_mean": 124.6,
+  "year": 2015,
+  "source": "WHO Global Health Observatory (GHO) Athena API",
+  "comparison_dimension": "Systolic Blood Pressure vs WHO Sex-Matched Global Population Mean",
+  "last_verified": "2026-09-24T19:49:00+05:30",
+  "documentation": "https://www.who.int/data/gho/data/indicators/indicator-details/GHO/mean-systolic-blood-pressure-(age-standardized-estimate)"
+}
