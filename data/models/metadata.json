@@ -69,7 +69,7 @@
     "XGBoost",
     "MLP Neural Network"
   ],
-  "trained_at": "2026-09-28T09:04:32.647643+00:00",
+  "trained_at": "2026-10-07T03:58:12.273115+00:00",
   "model_version": "2.0.0",
   "preprocessing": {
     "imputer": "SimpleImputer(strategy='median')",

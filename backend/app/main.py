@@ -14,6 +14,16 @@ from app.train import clean_data, DATA
 
 ROOT = Path(__file__).resolve().parents[2]
 MODEL_FILE, META_FILE = ROOT / "data/models/best_model.joblib", ROOT / "data/models/metadata.json"
+
+# ── Individual model files for model testing/comparison only ─────────────────
+# These are populated by train.py alongside best_model.joblib.
+# The production pipeline (best_model.joblib) is NEVER touched by model testing.
+_ALL_MODEL_FILES = {
+    "Random Forest":      ROOT / "data/models/rf_model.joblib",
+    "SVM":                ROOT / "data/models/svm_model.joblib",
+    "XGBoost":            ROOT / "data/models/xgb_model.joblib",
+    "MLP Neural Network": ROOT / "data/models/mlp_model.joblib",
+}
 FEATURES = ["age_years", "gender", "height", "weight", "ap_hi", "ap_lo", "cholesterol", "gluc", "smoke", "alco", "active", "bmi"]
 DISPLAY = {
     "age_years": "Age", "gender": "Sex", "height": "Height", "weight": "Weight",
@@ -68,6 +78,11 @@ class Patient(BaseModel):
     smoke: Literal[0, 1] = 0
     alco: Literal[0, 1] = 0
     active: Literal[0, 1] = 1
+
+
+class ModelTestRequest(BaseModel):
+    model: str
+    patient: Patient
 
 
 class WhatIf(BaseModel):
@@ -220,6 +235,20 @@ async def lifespan(app: FastAPI):
         except Exception as exc:
             logger.warning("Could not build SHAP background: %s", exc)
 
+    # ── Load all individual model pipelines for model testing (read-only) ─────
+    # These are separate from best_model.joblib. Production pipeline is untouched.
+    all_models = {}
+    for model_name, model_path in _ALL_MODEL_FILES.items():
+        if model_path.exists():
+            try:
+                all_models[model_name] = joblib.load(model_path)
+                logger.info("Loaded testing model: %s", model_name)
+            except Exception as exc:
+                logger.warning("Could not load testing model %s: %s", model_name, exc)
+        else:
+            logger.info("Testing model not found (run training): %s", model_path.name)
+    state["all_models"] = all_models
+
     # ── Load patient cohort ──────────────────────────────────────────────────
     raw = pd.read_csv(DATA, sep=None, engine="python")
     df  = clean_data(raw).head(50)
@@ -304,6 +333,129 @@ def predict(patient: Patient):
 @app.post("/api/explain")
 def get_explanation(patient: Patient):
     return assessment(patient)["explanation"]
+
+
+@app.post("/api/model-testing/compare")
+def model_testing_compare(patient: Patient):
+    """
+    MODEL TESTING & COMPARISON endpoint.
+    Runs the same patient through each of the four independently trained models.
+    Returns individual predictions — NOT an ensemble.
+    The production pipeline (best_model.joblib / XGBoost) is NOT used here.
+    This endpoint is for demonstration and evaluation only.
+    """
+    all_models = state.get("all_models", {})
+    if not all_models:
+        raise HTTPException(
+            503,
+            detail="Individual model files not found. Please run: python -m app.train\n"
+                   "This saves rf_model.joblib, svm_model.joblib, xgb_model.joblib, mlp_model.joblib "
+                   "alongside best_model.joblib."
+        )
+
+    frame, d = as_frame(patient)
+    meta      = state["meta"]
+
+    # Known per-model metrics from metadata (actual evaluated results, never faked)
+    metrics_lookup = {m["model"]: m for m in meta.get("metrics", [])}
+
+    results = []
+    for model_name, pipeline in all_models.items():
+        try:
+            prob = float(pipeline.predict_proba(frame)[0, 1])
+            pred_class = int(pipeline.predict(frame)[0])
+            metrics = metrics_lookup.get(model_name, {})
+            results.append({
+                "model":            model_name,
+                "model_display":    _clean_model_name(model_name),
+                "is_deployed":      (model_name == meta.get("best_model")),
+                "prediction": {
+                    "predicted_class":    pred_class,
+                    "risk_probability":   round(prob, 4),
+                    "risk_score":         round(prob * 100, 1),
+                    "risk_category":      risk_category(prob),
+                },
+                "performance_metrics": {
+                    "accuracy":  metrics.get("accuracy"),
+                    "precision": metrics.get("precision"),
+                    "recall":    metrics.get("recall"),
+                    "f1":        metrics.get("f1"),
+                    "roc_auc":   metrics.get("roc_auc"),
+                },
+            })
+        except Exception as exc:
+            logger.warning("Model testing prediction failed for %s: %s", model_name, exc)
+            results.append({
+                "model":         model_name,
+                "model_display": _clean_model_name(model_name),
+                "is_deployed":   (model_name == meta.get("best_model")),
+                "error":         str(exc),
+            })
+
+    # Sort in canonical display order
+    _ORDER = ["Random Forest", "SVM", "XGBoost", "MLP Neural Network"]
+    results.sort(key=lambda r: _ORDER.index(r["model"]) if r["model"] in _ORDER else 99)
+
+    return {
+        "patient_summary":   d,
+        "models_tested":     len(results),
+        "deployed_model":    _clean_model_name(meta.get("best_model", "XGBoost")),
+        "selection_metric":  "ROC-AUC",
+        "results":           results,
+        "note":              "Each model tested independently. This is a demonstration interface only. "
+                             "The production dashboard uses only the deployed model.",
+    }
+
+
+@app.post("/api/model-test")
+def model_test_single(req: ModelTestRequest):
+    all_models = state.get("all_models", {})
+    if not all_models:
+        raise HTTPException(
+            503,
+            detail="Individual model files not found. Please run: python -m app.train"
+        )
+    
+    model_name = req.model
+    if model_name not in all_models:
+        raise HTTPException(404, detail=f"Model '{model_name}' not found.")
+        
+    pipeline = all_models[model_name]
+    frame, d = as_frame(req.patient)
+    meta = state["meta"]
+    
+    try:
+        prob = float(pipeline.predict_proba(frame)[0, 1])
+        pred_class = int(pipeline.predict(frame)[0])
+        metrics_lookup = {m["model"]: m for m in meta.get("metrics", [])}
+        metrics = metrics_lookup.get(model_name, {})
+        
+        return {
+            "model": model_name,
+            "model_display": _clean_model_name(model_name),
+            "is_deployed": (model_name == meta.get("best_model")),
+            "prediction": {
+                "predicted_class": pred_class,
+                "risk_probability": round(prob, 4),
+                "risk_score": round(prob * 100, 1),
+                "risk_category": risk_category(prob),
+            },
+            "performance_metrics": {
+                "accuracy": metrics.get("accuracy"),
+                "precision": metrics.get("precision"),
+                "recall": metrics.get("recall"),
+                "f1": metrics.get("f1"),
+                "roc_auc": metrics.get("roc_auc"),
+            },
+        }
+    except Exception as exc:
+        logger.warning("Model testing prediction failed for %s: %s", model_name, exc)
+        return {
+            "model": model_name,
+            "model_display": _clean_model_name(model_name),
+            "is_deployed": (model_name == meta.get("best_model")),
+            "error": str(exc),
+        }
 
 
 @app.post("/api/what-if")

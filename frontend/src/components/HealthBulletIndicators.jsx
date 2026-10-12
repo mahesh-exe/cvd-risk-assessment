@@ -163,8 +163,6 @@ export default function HealthBulletIndicators({
             key={item.id}
             role="button"
             tabIndex={0}
-            aria-haspopup="dialog"
-            aria-label={`View clinical details and scale for ${item.name}`}
             className={`bullet-indicator-row ${isCrossActive ? 'cross-highlighted' : ''}`}
             onClick={() => { if (onSelectIndicator) onSelectIndicator(item.id); }}
             onKeyDown={(e) => {
@@ -175,6 +173,7 @@ export default function HealthBulletIndicators({
             }}
             onMouseEnter={() => { if (onHoverFactor) onHoverFactor(item.id); }}
             onMouseLeave={() => { if (onHoverFactor) onHoverFactor(null); }}
+            style={{ cursor: 'pointer' }}
           >
             {/* Header: Name, Current Value, Status Badge */}
             <div className="bullet-header">
@@ -184,7 +183,6 @@ export default function HealthBulletIndicators({
                 <span className={`bullet-status-pill ${statusClass}`}>
                   {item.status}
                 </span>
-                <span className="bullet-expand-arrow" aria-hidden="true" title="Open detailed visualization">›</span>
               </div>
             </div>
 

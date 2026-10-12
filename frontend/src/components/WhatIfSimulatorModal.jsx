@@ -213,7 +213,7 @@ export default function WhatIfSimulatorModal({
                   return (
                     <g key={pct}>
                       <line x1="28" y1={y} x2="215" y2={y} stroke="#E2E8F0" strokeWidth="0.8" strokeDasharray="3 3" />
-                      <text x="22" y={y + 3} fontSize="8.5" fill="#94A3B8" textAnchor="end" fontFamily="'JetBrains Mono',monospace">{pct}%</text>
+                      <text x="22" y={y + 3} fontSize="9.5" fill="#64748B" textAnchor="end" fontFamily="'JetBrains Mono',monospace">{pct}%</text>
                     </g>
                   );
                 })}
@@ -236,19 +236,19 @@ export default function WhatIfSimulatorModal({
 
                 {/* Current Point (Left) */}
                 <circle cx="65" cy={currentY} r="7" fill="#EF4444" stroke="#FFFFFF" strokeWidth="2" filter="url(#nodeGlow2)" />
-                <text x="65" y={currentY - 11} fontSize="12" fontWeight="800" fill="#DC2626" textAnchor="middle" fontFamily="'Outfit', sans-serif">
+                <text x="65" y={currentY - 11} fontSize="13.5" fontWeight="800" fill="#DC2626" textAnchor="middle" fontFamily="'Outfit', sans-serif">
                   {currentScore.toFixed(1)}%
                 </text>
-                <text x="65" y="152" fontSize="9" fontWeight="700" fill="#64748B" textAnchor="middle">
+                <text x="65" y="152" fontSize="10" fontWeight="700" fill="#475569" textAnchor="middle">
                   CURRENT
                 </text>
 
                 {/* Target Point (Right) */}
                 <circle cx="180" cy={targetY} r="7.5" fill={targetScore <= currentScore ? "#10B981" : "#EF4444"} stroke="#FFFFFF" strokeWidth="2.2" filter="url(#nodeGlow2)" />
-                <text x="180" y={targetY - 11} fontSize="12.5" fontWeight="800" fill={targetScore <= currentScore ? "#059669" : "#DC2626"} textAnchor="middle" fontFamily="'Outfit', sans-serif">
+                <text x="180" y={targetY - 11} fontSize="14" fontWeight="800" fill={targetScore <= currentScore ? "#059669" : "#DC2626"} textAnchor="middle" fontFamily="'Outfit', sans-serif">
                   {targetScore.toFixed(1)}%
                 </text>
-                <text x="180" y="152" fontSize="9" fontWeight="700" fill="#059669" textAnchor="middle">
+                <text x="180" y="152" fontSize="10" fontWeight="700" fill="#059669" textAnchor="middle">
                   TARGET
                 </text>
               </svg>
@@ -474,8 +474,8 @@ export default function WhatIfSimulatorModal({
 
             {/* Compact Clinical Methodology Footnote */}
             <div className="guidance-item-box disclaimer" style={{ marginTop: 'auto', padding: '5px 8px' }}>
-              <div className="guidance-icon-bullet" style={{ fontSize: '10px' }}>ℹ️</div>
-              <p className="guidance-disclaimer-text" style={{ fontSize: '7.5px', lineHeight: 1.25 }}>
+              <div className="guidance-icon-bullet" style={{ fontSize: '11px' }}>ℹ️</div>
+              <p className="guidance-disclaimer-text" style={{ fontSize: '8.5px', lineHeight: 1.25 }}>
                 Cross-sectional empirical estimate. Machine learning model estimates risk from input parameters; reduction window reflects recommended clinical intervention interval prior to reassessment.
               </p>
             </div>

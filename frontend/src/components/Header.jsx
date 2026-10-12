@@ -15,7 +15,8 @@ export default function Header({
   onOpenPatientModal,
   onOpenAnalyticsModal,
   onOpenGuidelinesModal,
-  onOpenNewPatientModal
+  onOpenNewPatientModal,
+  onOpenModelTestingModal
 }) {
   return (
     <header className="top-clinical-header">
@@ -52,6 +53,13 @@ export default function Header({
             onClick={onOpenAnalyticsModal}
           >
             <span>Model Validation</span>
+          </button>
+          <button
+            className="nav-pill-btn nav-pill-testing"
+            onClick={onOpenModelTestingModal}
+            title="Model Testing & Comparison — demonstration interface"
+          >
+            <span>🔬 Model Testing</span>
           </button>
           <button
             className="nav-pill-btn"

@@ -11,6 +11,7 @@ import BenchmarkDumbbellChart from './components/BenchmarkDumbbellChart.jsx';
 import LiveTelemetryStream from './components/LiveTelemetryStream.jsx';
 import WhatIfSimulatorModal from './components/WhatIfSimulatorModal.jsx';
 import ModelAnalyticsModal from './components/ModelAnalyticsModal.jsx';
+import ModelTestingModal from './components/ModelTestingModal.jsx';
 import AssessmentSequenceModal from './components/AssessmentSequenceModal.jsx';
 import PatientRecordModal from './components/PatientRecordModal.jsx';
 import ClinicalGuidelinesModal from './components/ClinicalGuidelinesModal.jsx';
@@ -53,6 +54,7 @@ export default function App() {
   // Modals state
   const [whatIfOpen, setWhatIfOpen] = useState(false);
   const [modelModalOpen, setModelModalOpen] = useState(false);
+  const [modelTestingOpen, setModelTestingOpen] = useState(false);
   const [patientModalOpen, setPatientModalOpen] = useState(false);
   const [guidelinesModalOpen, setGuidelinesModalOpen] = useState(false);
   const [newPatientOpen, setNewPatientOpen] = useState(false);
@@ -178,6 +180,7 @@ export default function App() {
         onOpenAnalyticsModal={() => setModelModalOpen(true)}
         onOpenGuidelinesModal={() => setGuidelinesModalOpen(true)}
         onOpenNewPatientModal={() => setNewPatientOpen(true)}
+        onOpenModelTestingModal={() => setModelTestingOpen(true)}
       />
 
       {/* ── SINGLE-SCREEN CLINICAL ANALYTICAL WORKSPACE (ZERO SCROLL) ── */}
@@ -435,6 +438,18 @@ export default function App() {
                   </svg>
                   <span>Model Validation</span>
                 </button>
+
+                <button
+                  className="btn-model-testing"
+                  onClick={() => setModelTestingOpen(true)}
+                  id="btn-model-testing-trigger"
+                  title="Open Model Testing & Comparison — demonstration interface"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 13, height: 13 }}>
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                  </svg>
+                  <span>Model Testing</span>
+                </button>
               </div>
             </div>
           </div>
@@ -482,7 +497,7 @@ export default function App() {
                 <span className="panel-main-title">Health Indicators</span>
                 <span className="panel-sub-title">Clinical Range & Threshold Charts</span>
               </div>
-              <span className="panel-badge-pill">7 Indicators</span>
+              <span className="panel-badge-pill">6 Biomarkers</span>
             </div>
             <div className="panel-inner-body bullet-body">
               <HealthBulletIndicators
@@ -569,6 +584,14 @@ export default function App() {
         open={modelModalOpen}
         onClose={() => setModelModalOpen(false)}
         modelInfo={modelInfo}
+      />
+
+      {/* 3a. Model Testing & Comparison — Demonstration Interface */}
+      {/* This is SEPARATE from production XGBoost. Each model tested independently. */}
+      <ModelTestingModal
+        open={modelTestingOpen}
+        onClose={() => setModelTestingOpen(false)}
+        patient={patient}
       />
 
       {/* 3. Patient Record Dossier Modal */}

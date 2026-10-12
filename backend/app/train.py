@@ -213,6 +213,19 @@ def main():
     joblib.dump(model, OUT / "best_model.joblib")
     logger.info("Saved best model → %s", OUT / "best_model.joblib")
 
+    # ── Save all individual model pipelines for model testing/comparison ─────
+    _MODEL_FILE_MAP = {
+        "Random Forest":      "rf_model.joblib",
+        "SVM":                "svm_model.joblib",
+        "XGBoost":            "xgb_model.joblib",
+        "MLP Neural Network": "mlp_model.joblib",
+    }
+    for model_name, pipeline_obj in fitted.items():
+        filename = _MODEL_FILE_MAP.get(model_name)
+        if filename:
+            joblib.dump(pipeline_obj, OUT / filename)
+            logger.info("Saved individual model → %s", OUT / filename)
+
     # ── Write metadata ────────────────────────────────────────────────────────
     meta = {
         "best_model":          best["model"],

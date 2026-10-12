@@ -122,7 +122,7 @@ function AuthenticClinicalGaugeComponent({ prediction, isAssessing = false }) {
               y1={y1}
               x2={x2}
               y2={y2}
-              stroke="#94A3B8"
+              stroke="#64748B"
               strokeWidth={t.pct % 50 === 0 ? "1.5" : "1"}
               strokeOpacity="0.7"
             />
@@ -130,9 +130,9 @@ function AuthenticClinicalGaugeComponent({ prediction, isAssessing = false }) {
         })}
 
         {/* Scale labels */}
-        <text x={CX - R - 9} y={CY + 14} fontSize="10.5" fill="#475569" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono',monospace">0%</text>
-        <text x={CX} y={CY - R - 7} fontSize="10.5" fill="#475569" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono',monospace">50%</text>
-        <text x={CX + R + 9} y={CY + 14} fontSize="10.5" fill="#475569" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono',monospace">100%</text>
+        <text x={CX - R - 9} y={CY + 14} fontSize="11.5" fill="#475569" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono',monospace">0%</text>
+        <text x={CX} y={CY - R - 7} fontSize="11.5" fill="#475569" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono',monospace">50%</text>
+        <text x={CX + R + 9} y={CY + 14} fontSize="11.5" fill="#475569" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono',monospace">100%</text>
 
         {/* Rotating Needle */}
         <g
@@ -157,7 +157,7 @@ function AuthenticClinicalGaugeComponent({ prediction, isAssessing = false }) {
           />
           <polygon
             points={`${CX - 3},${CY} ${CX},${CY + 12} ${CX + 3},${CY}`}
-            fill="#334155"
+            fill="#1E293B"
           />
         </g>
 
@@ -170,7 +170,7 @@ function AuthenticClinicalGaugeComponent({ prediction, isAssessing = false }) {
           x={CX}
           y={CY + 34}
           textAnchor="middle"
-          fontSize="42"
+          fontSize="44"
           fontWeight="800"
           fill="#0F172A"
           fontFamily="'Outfit', sans-serif"
@@ -196,7 +196,7 @@ function AuthenticClinicalGaugeComponent({ prediction, isAssessing = false }) {
             y="13"
             textAnchor="middle"
             fill={catColor}
-            fontSize="10"
+            fontSize="11"
             fontWeight="800"
             fontFamily="'Outfit', sans-serif"
             letterSpacing="0.06em"

@@ -65,7 +65,7 @@ export default function ModelAnalyticsModal({ open, onClose, modelInfo }) {
     'MLP Neural Network': '#3B82F6',
   };
   const getModelColor = (displayName) =>
-    MODEL_COLORS[displayName] || '#64748B';
+    MODEL_COLORS[displayName] || '#475569';
 
   return (
     <div className="clinical-modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
@@ -142,7 +142,7 @@ export default function ModelAnalyticsModal({ open, onClose, modelInfo }) {
           </div>
 
           {metricsData.length === 0 && (
-            <div style={{ padding: '20px', textAlign: 'center', color: '#64748B', fontSize: '12px' }}>
+            <div style={{ padding: '20px', textAlign: 'center', color: '#475569', fontSize: '13.5px' }}>
               No model metrics available. Run the training pipeline first.
             </div>
           )}

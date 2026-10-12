@@ -245,9 +245,9 @@ export default function RadialCardiovascularProfile({
                   x={lx}
                   y={ly + 4}
                   textAnchor="middle"
-                  fontSize={isHighlighted ? "12.5" : "11"}
+                  fontSize={isHighlighted ? "14" : "12.5"}
                   fontWeight={isHighlighted ? "800" : "700"}
-                  fill={isHighlighted ? colors.text : "#334155"}
+                  fill={isHighlighted ? colors.text : "#1E293B"}
                   fontFamily="'Outfit', -apple-system, sans-serif"
                   style={{
                     pointerEvents: 'none',
@@ -300,14 +300,14 @@ export default function RadialCardiovascularProfile({
                 pointerEvents: 'none'
               }}
             >
-              <text x={CX} y={CY - 13} textAnchor="middle" fontSize="16">
+              <text x={CX} y={CY - 13} textAnchor="middle" fontSize="18">
                 {effectiveActiveFactor.icon}
               </text>
               <text
                 x={CX}
                 y={CY + 1}
                 textAnchor="middle"
-                fontSize="9.5"
+                fontSize="10.5"
                 fontWeight="800"
                 fill="#1E293B"
                 fontFamily="'Outfit', sans-serif"
@@ -319,7 +319,7 @@ export default function RadialCardiovascularProfile({
                 x={CX}
                 y={CY + 14}
                 textAnchor="middle"
-                fontSize="10"
+                fontSize="11"
                 fontWeight="800"
                 fill={getStatusColor(effectiveActiveFactor.status).text}
                 fontFamily="'JetBrains Mono', monospace"
@@ -330,9 +330,9 @@ export default function RadialCardiovascularProfile({
                 x={CX}
                 y={CY + 25}
                 textAnchor="middle"
-                fontSize="8"
+                fontSize="9"
                 fontWeight="700"
-                fill="#64748B"
+                fill="#475569"
               >
                 {effectiveActiveFactor.status.toUpperCase()}
               </text>
@@ -345,16 +345,16 @@ export default function RadialCardiovascularProfile({
                 pointerEvents: 'none'
               }}
             >
-              <text x={CX} y={CY - 4} textAnchor="middle" fontSize="20" className="center-heart-icon">
+              <text x={CX} y={CY - 4} textAnchor="middle" fontSize="22" className="center-heart-icon">
                 🫀
               </text>
               <text
                 x={CX}
                 y={CY + 12}
                 textAnchor="middle"
-                fontSize="9.5"
+                fontSize="10.5"
                 fontWeight="800"
-                fill="#334155"
+                fill="#1E293B"
                 fontFamily="'Outfit', sans-serif"
                 letterSpacing="0.06em"
               >
